@@ -1,27 +1,29 @@
 using UnityEngine;
 
-public class PlayerStartingSpawn : PlayerSpawn
+public class PlayerStartingSpawn : MonoBehaviour
 {
-    public override void Awake()
+    public void Awake()
     {
         // This needs to be in awake as the tile map is not already made on start.
-        //GameManager.instance.playerStartingSpawnPoints.Add(this);
+        GameManager.instance.playerStartingSpawnPoints.Add(this);
+        //GameManager.instance.playerStartingSpawnPoint = this.gameObject;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public override void Start()
+    public void Start()
     {
 
-        GameManager.instance.playerStartingSpawnPoints.Add(this);
+        //GameManager.instance.playerStartingSpawnPoints.Add(this);
+        //GameManager.instance.playerStartingSpawnPoint = this.gameObject;
     }
 
     // Update is called once per frame
-    public override void Update()
+    public void Update()
     {
 
     }
 
-    public override void OnDestroy()
+    public void OnDestroy()
     {
         //remove from PlayerSpawn list
         GameManager.instance.playerStartingSpawnPoints.Remove(this);

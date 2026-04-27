@@ -13,6 +13,8 @@ public class Pickup : MonoBehaviour
     public virtual void Start()
     {
 
+        GameManager.instance.pickUps.Add(this);
+
         //set our collider to be a trigger
         Collider theCollider = GetComponent<Collider>();
         theCollider.isTrigger = true;
@@ -39,7 +41,7 @@ public class Pickup : MonoBehaviour
     public virtual void OnDestroy()
     {
 
-        //GameManager.instance.pickUps.Remove(this);
+        GameManager.instance.pickUps.Remove(this);
         //base effects
     }
 }

@@ -8,9 +8,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    //public Level level;
+    public Level level;
 
-    bool bGameOver = false;
+    //bool bGameOver = false;
 
    
 
@@ -44,10 +44,13 @@ public class GameManager : MonoBehaviour
     public List<PlayerPawn> playerPawn;
     public List<PlayerController> playerControllers;
     public List<EnemySpawn> enemySpawnPoints;
+    public List<Pickup> pickUps;
+
+    public GameObject playerStartingSpawnPoint;
 
     [Header("AI Enemies")]
     public int enemyInitialSpawnAmount;
-    private int initalSpawnedEnemies;
+    public int SpawnedEnemies;
     public List<Pawn> enemyPawns;
 
     [Header("Spawnable Enemies")]
@@ -61,7 +64,7 @@ public class GameManager : MonoBehaviour
     public GameObject GameplayScreenObject;
     public GameObject GameOverScreenObject;
 
-    void Awake()
+    public void Awake()
     {
         //check if there is an instance of the GameManager.
         //If there isn't one, make a new instance and tell the game to not destroy on load.
@@ -86,7 +89,7 @@ public class GameManager : MonoBehaviour
         playerPawn = new List<PlayerPawn>();
         enemySpawnPoints = new List<EnemySpawn>();
         //powerUpSpawners = new List<SpawnerTimed>();
-        //pickUps = new List<PickUp>();
+        pickUps = new List<Pickup>();
 
 
         //check that playerprefs has a highscore to track. If it doesn't make one.
@@ -100,6 +103,8 @@ public class GameManager : MonoBehaviour
 
         highScore = PlayerPrefs.GetInt("HighScore");
 
+
+        //StartGame();
     }
 
     public void ActivateTitleScreen()
@@ -130,7 +135,7 @@ public class GameManager : MonoBehaviour
 
     public void ActivateGameplayScreen()
     {
-        bGameOver = false;
+        //bGameOver = false;
 
         DeactivateAllStates();
         GameplayScreenObject.SetActive(true);
@@ -165,7 +170,6 @@ public class GameManager : MonoBehaviour
         GameplayScreenObject.SetActive(false);
         GameOverScreenObject.SetActive(false);
 
-        //Camera camera = Camera.main;
 
     }
 
@@ -183,26 +187,49 @@ public class GameManager : MonoBehaviour
     void Update()
     {
 
-        if(playerController != null)
-        {
 
-            currentPlayerScore = playerController.currentScore;
+        //set score  if gameplay screen is active
+        //if (GameplayScreenObject.activeSelf)
+        //{
 
-        }
+            if (playerController != null)
+            {
 
+                currentPlayerScore = playerController.currentScore;
+
+                Canvas canvas1 = playerCamera.GetComponentInChildren<Canvas>();
+                UScoreManager player1ScoreManger = canvas1.GetComponent<UScoreManager>();
+                player1ScoreManger.SetLivesValue(currentPlayerLives);
+                player1ScoreManger.SetScoreValue(currentPlayerScore);
+
+            }
+
+
+
+
+
+
+        //}
     }
 
     public void StartGame()
     {
 
+        //Do everything to start game
+
+        //generate map
+        level.mapGenerator.GenerateMap();
+
+        
+
         //Spawn player
         SpawnPlayer();
 
 
-        do
+        while (SpawnedEnemies < enemyInitialSpawnAmount)
         {
             SpawnEnemy();
-        } while (initalSpawnedEnemies < enemyInitialSpawnAmount);
+        } 
 
 
 }
@@ -231,12 +258,43 @@ public class GameManager : MonoBehaviour
         }
         */
 
+
+
+        Debug.Log(playerStartingSpawnPoints[0]);
+        /*
+        if (playerStartingSpawnPoint != null)
+        {
+            Debug.Log("Spawn point was chosen!");
+
+            currentPlayerCheckpoint = playerStartingSpawnPoint.transform;
+
+            playerSpawnPosition = currentPlayerCheckpoint.position;
+        }
+        else
+        {
+            Debug.Log("Spawm point was not chosen!");
+
+            playerSpawnPosition = Vector3.zero;
+        }
+        */
+
         //choose a spawn point from the list of Player Starting Spawn points
         //Also set the transform of the current checkpoint
-        currentPlayerCheckpoint = playerStartingSpawnPoints[0].transform;
+        if (playerStartingSpawnPoints.Count > 0)
+        {
+            Debug.Log("Spawn point was chosen!");
+            currentPlayerCheckpoint = playerStartingSpawnPoints[0].transform;
+            playerSpawnPosition = currentPlayerCheckpoint.position;
+        }
+        else
+        {
+            Debug.Log("Spawm point was not chosen!");
+            playerSpawnPosition = Vector3.zero;
+        }
 
-        playerSpawnPosition = currentPlayerCheckpoint.position;
-     
+
+            
+
 
         //Spawn tank pawn (and store it in tanks)
         Pawn tempPlayerPawn = SpawnPawn(playerPawnPrefab);
@@ -327,7 +385,8 @@ public class GameManager : MonoBehaviour
     }
 
 
-    //respawn without destroying
+    //respawn without destroying.
+    // one cvall is found in player health component
     public void RespawnPlayer()
     {
         //player has died, move prefab and deincrement lives
@@ -405,11 +464,12 @@ public class GameManager : MonoBehaviour
 
         Vector3 enemySpawnPosition;
 
+        Debug.Log(enemySpawnPoints.Count);
 
         //choose a spawnpoint from the list
         if (enemySpawnPoints.Count > 0)
         {
-            Debug.Log("Enemy Spawn point was chosen!");
+            
 
             //get spawn point
             EnemySpawn spawnPoint;
@@ -420,7 +480,7 @@ public class GameManager : MonoBehaviour
             //set randomly selected spawn point to this enemyspawn variable
             spawnPoint = enemySpawnPoints[Random.Range(0, enemySpawnPoints.Count)];
 
-
+            Debug.Log("Enemy Spawn point was chosen!");
 
             //set this spanw points transform to a transform variable
             Transform spawnPointTransform = spawnPoint.transform;
@@ -442,7 +502,7 @@ public class GameManager : MonoBehaviour
             // move to spawnpoint
             tempEnemyPawn.transform.position = enemySpawnPosition;
 
-            initalSpawnedEnemies++;
+            SpawnedEnemies++;
 
             //create temp enemy controller
             //Controller_AI tempEnemyController;

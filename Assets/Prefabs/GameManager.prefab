@@ -44,19 +44,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4942bfeb79b7274fb862c918e942b4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  startingPlayerLives: 0
-  currentPlayer1Lives: 0
-  currentPlayer1Score: 0
-  player1Object: {fileID: 0}
-  player1Controller: {fileID: 0}
-  player1Camera: {fileID: 0}
-  playerControllerPrefab: {fileID: 0}
-  playerPawnPrefab: {fileID: 0}
-  cameraPrefab: {fileID: 0}
-  player1InputActionsPrefab: {fileID: 0}
+  level:
+    mapGenerator: {fileID: 0}
+  startingPlayerLives: 2
+  currentPlayerLives: 0
+  currentPlayerScore: 0
+  playerObject: {fileID: 0}
+  playerController: {fileID: 0}
+  playerCamera: {fileID: 0}
+  currentPlayerCheckpoint: {fileID: 0}
+  playerControllerPrefab: {fileID: 3508996079023940260, guid: a70fcc24755773c4b8d264afe503ad68, type: 3}
+  playerPawnPrefab: {fileID: 3185823675647614635, guid: 9458707aec946ee4e941668a1f591ab9, type: 3}
+  cameraPrefab: {fileID: 2044223130154874795, guid: a05104975092fcf4b84de4f02618b1a8, type: 3}
+  playerInputActionsPrefab: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   ai: []
+  playerStartingSpawnPoints: []
+  playerSpawnPoints: []
+  playerPawn: []
+  playerControllers: []
+  enemySpawnPoints: []
+  pickUps: []
+  enemyInitialSpawnAmount: 1
   enemyPawns: []
-  enemyPrefabs: []
+  enemyPrefabs:
+  - {fileID: 3505478735574491736, guid: 222b0930a92d10045a06376d33645d65, type: 3}
   TitleScreenObject: {fileID: 0}
   MainMenuScreenObject: {fileID: 0}
   OptionsScreenObject: {fileID: 0}

@@ -128,6 +128,8 @@ public class PlayerHealthComponent : HealthComponent
         controller.lives -= 1;
 
         Debug.Log(gameObject.name + " has respawned.");
+
+        //respawn the player
         GameManager.instance.RespawnPlayer();
 
     }

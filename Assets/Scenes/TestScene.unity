@@ -613,10 +613,6 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}
-      propertyPath: enemyPawns.Array.size
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}
       propertyPath: playerControllerPrefab
       value: 
       objectReference: {fileID: 3508996079023940260, guid: a70fcc24755773c4b8d264afe503ad68, type: 3}
@@ -629,15 +625,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}
-      propertyPath: 'enemyPawns.Array.data[0]'
-      value: 
-      objectReference: {fileID: 8214352437107425936, guid: 222b0930a92d10045a06376d33645d65, type: 3}
-    - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}
       propertyPath: playerInputActionsPrefab
-      value: 
-      objectReference: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
-    - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}
-      propertyPath: player1InputActionsPrefab
       value: 
       objectReference: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
     - target: {fileID: 2942734781590963899, guid: 6d990990f4d9bd84dbeac629b081c335, type: 3}

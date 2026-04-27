@@ -4,7 +4,6 @@ using UnityEngine;
 public class Level
 {
 
-    public int difficulty;
     public MapGenerator mapGenerator;
 
 }

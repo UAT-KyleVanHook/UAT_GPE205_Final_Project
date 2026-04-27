@@ -8,13 +8,13 @@ public class EnemySpawn : MonoBehaviour
     public void Awake()
     {
         // This needs to be in awake as the tile map is not already made on start.
-        //GameManager.instance.enemySpawnPoints.Add(this);
+        GameManager.instance.enemySpawnPoints.Add(this);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GameManager.instance.enemySpawnPoints.Add(this);
+        //GameManager.instance.enemySpawnPoints.Add(this);
     }
 
     // Update is called once per frame
