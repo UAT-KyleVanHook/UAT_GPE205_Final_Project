@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,7 +21,7 @@ public class PlayerController : Controller
         inputActions.Enable();
 
         //add this to the list of players
-        //GameManager.instance.players.Add(this);
+        GameManager.instance.playerControllers.Add(this);
 
         moveNoiseMaker = pawn.GetComponent<Noisemaker>();
 
@@ -31,14 +32,15 @@ public class PlayerController : Controller
     {
 
         //remove this from list of players
-        //GameManager.instance.players.Remove(this);
+        GameManager.instance.playerControllers.Remove(this);
 
     }
 
     // Update is called once per frame
     public override void Update()
     {
-        Debug.Log("Player is moving: " + inputActions["Move"].IsPressed());
+        //Debug.Log("Player is moving: " + inputActions["Move"].IsPressed());
+        //Debug.Log("Player shoots: " + inputActions["Shoot"].IsInProgress());
 
         //do what our parent class does in its function
         base.Update();
@@ -54,13 +56,20 @@ public class PlayerController : Controller
         float z = movementVector.y;
 
         //check that the pawn is not null and that the Move input is pressed.
-        if (pawn != null&& inputActions["Move"].IsPressed())
+        if (pawn != null && inputActions["Move"].IsInProgress())
         {
-            //pass movement vector from inputAction into the pawns move and rotate functions
-            pawn.Move(new Vector3(x, z));
+            //Debug.Log("Player is moving: " + inputActions["Move"].IsInProgress());
 
-            //the player is making sound
-            moveNoiseMaker.SetNoiseVolume(walkNoiseAmount);
+            //pass movement vector from inputAction into the pawns move and rotate functions
+            if (pawn != null && moveNoiseMaker != null && inputActions["Move"].IsInProgress())
+            {
+                pawn.Move(new Vector3(x, z));
+
+                //the player is making sound
+                moveNoiseMaker.SetNoiseVolume(walkNoiseAmount);
+            }
+
+
             
 
             //pawn.Rotate(new Vector2(movementVector.x, 0));
@@ -78,27 +87,36 @@ public class PlayerController : Controller
 
         if (pawn != null)
         {
-            //Debug.Log(mousePosition);
-            pawn.Rotate(new Vector2(mousePosition.x, mousePosition.y));
+            if(pawn != null && inputActions["Look"].triggered)
+            {
+
+                //Debug.Log(mousePosition);
+                pawn.Rotate(new Vector2(mousePosition.x, mousePosition.y));
+
+            }
+
         }
 
 
 
 
-        if (inputActions["Shoot"].IsPressed())
+        if (inputActions["Shoot"].triggered)
         {
-            if (pawn != null && inputActions["Shoot"].IsPressed())
+            if (pawn != null && inputActions["Shoot"].triggered)
             {
                 //TankShooter shooter = pawn.GetComponent<TankShooter>();
 
                 //was "pawn.Shoot()", but had to change to to issue with AI enemies also firing.
                 //shooter.Shoot();
+                if (pawn != null && moveNoiseMaker != null)
+                {
+                    Debug.Log("Shooting!");
 
-                Debug.Log("Shooting!");
+                    pawn.Shoot();
 
-                pawn.Shoot();
+                    moveNoiseMaker.SetNoiseVolume(shootNoiseAmount);
+                }
 
-                moveNoiseMaker.SetNoiseVolume(shootNoiseAmount);
 
             }
             else

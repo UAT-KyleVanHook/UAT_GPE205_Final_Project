@@ -5,11 +5,13 @@ using static Unity.VisualScripting.Member;
 
 public class PlayerHealthComponent : HealthComponent
 {
-    public Image healthimage;
+    public Image healthImage;
     //private AudioSource audioSource;
 
     private AudioSource audio;
     public AudioClip hurtClip;
+
+    public GameObject spawnedAudioPlayer;
 
     //get controller to track lives
     [HideInInspector] public Controller controller;
@@ -25,7 +27,7 @@ public class PlayerHealthComponent : HealthComponent
     {
         currentHealth = maxHealth;
 
-        healthimage.fillAmount = currentHealth / maxHealth;
+        healthImage.fillAmount = currentHealth / maxHealth;
 
         audio = GetComponent<AudioSource>();
 
@@ -43,12 +45,15 @@ public class PlayerHealthComponent : HealthComponent
         currentHealth = currentHealth - amount;
 
         //change the fill amount of heatlh bar image
-        healthimage.fillAmount = currentHealth / maxHealth;
+        healthImage.fillAmount = currentHealth / maxHealth;
 
         //clamp health so current health doesn't go above  max health
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        audio.PlayOneShot(hurtClip);
+        if (currentHealth > 0 && hurtClip != null)
+        {
+            audio.PlayOneShot(hurtClip);
+        }
 
         if (currentHealth <= 0)
         {
@@ -63,14 +68,9 @@ public class PlayerHealthComponent : HealthComponent
         currentHealth += amount;
 
         //change the fill amount of heatlh bar image
-        healthimage.fillAmount = currentHealth / maxHealth;
+        healthImage.fillAmount = currentHealth / maxHealth;
 
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-
-        //if (currentHealth <= 0)
-        // {
-        // Die(source);
-        //}
 
     }
 
@@ -83,19 +83,24 @@ public class PlayerHealthComponent : HealthComponent
         currentHealth = maxHealth;
 
         //change the fill amount of health bar image
-        healthimage.fillAmount = currentHealth / maxHealth;
+        healthImage.fillAmount = currentHealth / maxHealth;
     }
 
     public override void Die(Pawn source)
     {
-        //check that the sound clip isn't null
-        if (destructionClip != null)
+        //check that the destruction clip isn't null
+        if (destructionClip != null && spawnedAudioPlayer != null)
         {
 
-            AudioSource.PlayClipAtPoint(destructionClip, transform.position);
+            //spawn an object to play an audioclip
+            GameObject tempObject = Instantiate<GameObject>(spawnedAudioPlayer, transform.position, Quaternion.identity);
+
+            PlayAudioClipBeforeDestroy TempAudioPlayer = tempObject.GetComponent<PlayAudioClipBeforeDestroy>();
+
+            TempAudioPlayer.SetAudioClip(destructionClip);
 
         }
-        /*
+        
         Controller sourceController = source.GetController();
 
         //check that the source that desrtoyed this object has a controller
@@ -118,12 +123,12 @@ public class PlayerHealthComponent : HealthComponent
 
 
         }
-        */
+        
         //deincremnt player lives in controller
-        //controller.lives -= 1;
+        controller.lives -= 1;
 
-        Debug.Log(gameObject.name + " has moved on to a better place.");
-        Destroy(gameObject);
+        Debug.Log(gameObject.name + " has respawned.");
+        GameManager.instance.RespawnPlayer();
 
     }
 

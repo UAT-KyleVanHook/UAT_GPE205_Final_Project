@@ -5,6 +5,8 @@ public class PickUpHealth : Pickup
     public static int count;
     public PowerUpHealth powerup;
 
+    public AudioClip eatClip;
+    public GameObject spawnedAudioPlayer;
     public override void Start()
     {
         //increment static count
@@ -30,6 +32,19 @@ public class PickUpHealth : Pickup
             {
                 //If yes, add this to the powerup manager
                 otherManager.Add(powerup);
+
+
+                //make sure score clip isn't null
+                if (eatClip != null && spawnedAudioPlayer != null)
+                {
+                    //spawn an object to play an audioclip
+                    GameObject tempObject = Instantiate<GameObject>(spawnedAudioPlayer, transform.position, Quaternion.identity);
+
+                    PlayAudioClipBeforeDestroy TempAudioPlayer = tempObject.GetComponent<PlayAudioClipBeforeDestroy>();
+
+                    TempAudioPlayer.SetAudioClip(eatClip);
+                }
+
 
                 //Destroy this object
                 Destroy(this.gameObject);

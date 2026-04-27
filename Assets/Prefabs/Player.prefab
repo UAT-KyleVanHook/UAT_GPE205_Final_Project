@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4583294918618054000}
   - component: {fileID: 2756180379735360933}
   - component: {fileID: 3560444730901051838}
-  - component: {fileID: 4213577899107463681}
   m_Layer: 0
   m_Name: Left_Barrel
   m_TagString: Untagged
@@ -91,29 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &4213577899107463681
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 16457839888347954}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &4797332876574094187
 GameObject:
   m_ObjectHideFlags: 0
@@ -181,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1, y: 0}
+  m_AnchoredPosition: {x: -1, y: 0.1}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8607253493787596954
@@ -290,7 +266,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 896.6666, y: 543}
+  m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &6643127614195733143
 Canvas:
@@ -367,7 +343,6 @@ GameObject:
   - component: {fileID: 3753527920445818773}
   - component: {fileID: 6413979577980709312}
   - component: {fileID: 797979328868106400}
-  - component: {fileID: 164408016128772568}
   m_Layer: 0
   m_Name: 'Right_Barrel '
   m_TagString: Untagged
@@ -447,29 +422,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &164408016128772568
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7557098092550068225}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1001 &2375428974597399546
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -488,7 +440,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ab1722c2ce7379c47b457364e3638013, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: ab1722c2ce7379c47b457364e3638013, type: 3}
       propertyPath: m_LocalRotation.w
@@ -592,7 +544,7 @@ PrefabInstance:
       addedObject: {fileID: 8163668630253637008}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ab1722c2ce7379c47b457364e3638013, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6539024315828871804}
+      addedObject: {fileID: 7963400101085628357}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ab1722c2ce7379c47b457364e3638013, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2035960970486313134}
@@ -652,8 +604,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!136 &6539024315828871804
-CapsuleCollider:
+--- !u!65 &7963400101085628357
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -670,11 +622,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.44739437, z: 0}
+  serializedVersion: 3
+  m_Size: {x: 0.50928485, y: 0.8313421, z: 0.45863938}
+  m_Center: {x: -0.011445969, y: 0.4562214, z: 0.010052681}
 --- !u!114 &2035960970486313134
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -819,7 +769,7 @@ MonoBehaviour:
   muzzleLocation: {fileID: 5145497325022967142}
   bulletPrefab: {fileID: 5485203847548165352, guid: 9872abb0a3846354aa467341910b0de2, type: 3}
   fireRate: 2
-  shootingClip: {fileID: 0}
+  shootingClip: {fileID: 8300000, guid: 199ef02ac3311254eb6588d3200caef0, type: 3}
 --- !u!114 &2187545231621121944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -834,9 +784,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerHealthComponent
   currentHealth: 0
   maxHealth: 3
-  destructionClip: {fileID: 0}
-  healthimage: {fileID: 5217355962088234056}
+  destructionClip: {fileID: 8300000, guid: 299673c68a0cc8f428e764478c9a47b2, type: 3}
+  healthImage: {fileID: 5217355962088234056}
   hurtClip: {fileID: 8300000, guid: d4cf6b399f66f484d9b30f98295e3a7d, type: 3}
+  spawnedAudioPlayer: {fileID: 1882355770868290318, guid: bb57bc0e6bd9529479639a80dc764eda, type: 3}
   controller: {fileID: 0}
 --- !u!114 &855506431408934467
 MonoBehaviour:

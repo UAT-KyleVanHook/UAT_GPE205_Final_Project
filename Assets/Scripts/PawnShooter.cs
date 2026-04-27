@@ -18,7 +18,7 @@ public class PawnShooter : Shooter
     {
         //get TankPawn
         pawn = GetComponent<Pawn>();
-        //audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
         nextShootTime = Time.time;
     }
 
@@ -34,10 +34,10 @@ public class PawnShooter : Shooter
         {
             
 
-            //if (shootingClip != null)
-            //{
-               // audioSource.PlayOneShot(shootingClip);
-            //}
+            if (shootingClip != null)
+            {
+               audioSource.PlayOneShot(shootingClip);
+            }
 
             
 
@@ -73,8 +73,7 @@ public class PawnShooter : Shooter
 
         rb.AddForce(muzzleLocation.forward * shootForce);
 
-        //reset the pawns noise amount
-        //pawn.noisemaker.ResetNoiseAmount();
+
     }
 
 

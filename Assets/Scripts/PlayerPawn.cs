@@ -10,7 +10,7 @@ public class PlayerPawn : Pawn
     {
 
         //Save tank to gamemanager
-        //GameManager.instance.tanks.Add(this);
+        GameManager.instance.playerPawn.Add(this);
 
         //Do what all pawns do
         base.Start();
@@ -25,7 +25,7 @@ public class PlayerPawn : Pawn
     {
 
         //Remove tank from gamemanager
-        //GameManager.instance.tanks.Remove(this);
+        GameManager.instance.playerPawn.Remove(this);
 
     }
 

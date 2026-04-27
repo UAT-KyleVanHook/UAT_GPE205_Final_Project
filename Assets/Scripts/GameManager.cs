@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,19 +12,22 @@ public class GameManager : MonoBehaviour
 
     bool bGameOver = false;
 
+   
+
     [Header("Lives")]
     public int startingPlayerLives;
-    public int currentPlayer1Lives;
+    public int currentPlayerLives;
 
     [Header("Score")]
     [HideInInspector] int highScore;
-    public int currentPlayer1Score;
+    public int currentPlayerScore;
 
     [Header("Player Objects")]
     //objects to track players, controllers and cameras
-    public GameObject player1Object;
-    public Controller player1Controller;
-    public GameObject player1Camera;
+    public GameObject playerObject;
+    public Controller playerController;
+    public GameObject playerCamera;
+    public Transform currentPlayerCheckpoint;
 
     [Header("Prefabs")]
     public GameObject playerControllerPrefab;
@@ -31,12 +35,19 @@ public class GameManager : MonoBehaviour
     public GameObject cameraPrefab;
 
     [Header("Input Action Prefabs")]
-    public InputActionAsset player1InputActionsPrefab;
+    public InputActionAsset playerInputActionsPrefab;
 
     [Header("Up-To-Date Lists")]
     public List<Controller_AI> ai;
+    public List<PlayerStartingSpawn> playerStartingSpawnPoints;
+    public List<PlayerSpawn> playerSpawnPoints;
+    public List<PlayerPawn> playerPawn;
+    public List<PlayerController> playerControllers;
+    public List<EnemySpawn> enemySpawnPoints;
 
     [Header("AI Enemies")]
+    public int enemyInitialSpawnAmount;
+    private int initalSpawnedEnemies;
     public List<Pawn> enemyPawns;
 
     [Header("Spawnable Enemies")]
@@ -65,7 +76,20 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //check that playerprefs has a highscore to track. If it doesn't make on.
+
+        //Clear our up to date list objects (not just memory locations, but actual lists)
+        enemyPawns = new List<Pawn>();
+        playerControllers = new List<PlayerController>();
+        ai = new List<Controller_AI>();
+        playerStartingSpawnPoints = new List<PlayerStartingSpawn>();
+        playerSpawnPoints = new List<PlayerSpawn>();
+        playerPawn = new List<PlayerPawn>();
+        enemySpawnPoints = new List<EnemySpawn>();
+        //powerUpSpawners = new List<SpawnerTimed>();
+        //pickUps = new List<PickUp>();
+
+
+        //check that playerprefs has a highscore to track. If it doesn't make one.
         if (!PlayerPrefs.HasKey("HighScore"))
         {
             Debug.Log("Making HighScore");
@@ -149,11 +173,22 @@ public class GameManager : MonoBehaviour
     void Start()
     {
 
+            
+        currentPlayerLives = startingPlayerLives;
+
+        StartGame();
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if(playerController != null)
+        {
+
+            currentPlayerScore = playerController.currentScore;
+
+        }
 
     }
 
@@ -161,16 +196,21 @@ public class GameManager : MonoBehaviour
     {
 
         //Spawn player
-        //SpawnPlayer();
+        SpawnPlayer();
 
 
+        do
+        {
+            SpawnEnemy();
+        } while (initalSpawnedEnemies < enemyInitialSpawnAmount);
 
-    }
+
+}
 
 
 
     //Player Spawning//
-    public void SpawnPlayer1()
+    public void SpawnPlayer()
     {
         Vector3 playerSpawnPosition;
 
@@ -191,6 +231,13 @@ public class GameManager : MonoBehaviour
         }
         */
 
+        //choose a spawn point from the list of Player Starting Spawn points
+        //Also set the transform of the current checkpoint
+        currentPlayerCheckpoint = playerStartingSpawnPoints[0].transform;
+
+        playerSpawnPosition = currentPlayerCheckpoint.position;
+     
+
         //Spawn tank pawn (and store it in tanks)
         Pawn tempPlayerPawn = SpawnPawn(playerPawnPrefab);
 
@@ -201,49 +248,53 @@ public class GameManager : MonoBehaviour
         tempPlayerController.Possess(tempPlayerPawn);
 
         //set the player contoller as the main controller to remember
-        player1Controller = tempPlayerController;
+        playerController = tempPlayerController;
 
         //set the playerinput
-        player1Controller.SetInputActions(player1InputActionsPrefab);
+        playerController.SetInputActions(playerInputActionsPrefab);
 
         //set the lives of the player on spawn
-        player1Controller.lives = startingPlayerLives;
+        playerController.lives = startingPlayerLives;
 
         //set the current lives of the player
-        currentPlayer1Lives = player1Controller.lives;
+        currentPlayerLives = playerController.lives;
 
         //set controller for healthcomp
         PlayerHealthComponent tempHealthComp = tempPlayerPawn.GetComponent<PlayerHealthComponent>();
-        tempHealthComp.AssignController(player1Controller);
+        tempHealthComp.AssignController(playerController);
 
         //add Audio Listener to pawn
         tempPlayerPawn.AddComponent<AudioListener>();
 
         //spawn and instantiate camera object
-        player1Camera = SpawnCamera(cameraPrefab);
+        playerCamera = SpawnCamera(cameraPrefab);
 
 
         // move to spawnpoint
-       // tempPlayerPawn.transform.position = playerSpawnPosition;
+        tempPlayerPawn.transform.position = playerSpawnPosition;
 
         //set the player to be used as a target for AI
-        SetPlayer1Object(tempPlayerPawn.gameObject);
+        SetPlayerObject(tempPlayerPawn.gameObject);
 
         //set camera target
-        CameraFollow tempCamera = player1Camera.GetComponent<CameraFollow>();
-        tempCamera.SetTarget(player1Object);
+        CameraFollow tempCamera = playerCamera.GetComponent<CameraFollow>();
+        tempCamera.SetTarget(playerObject);
 
+        //set the camera of the pawn mover
+        PawnMover tempPawnMover = tempPlayerPawn.GetComponent<PawnMover>();
+
+        tempPawnMover.camera = playerCamera.GetComponent<Camera>();
 
     }
 
 
     
     //set playerObject in gameManager
-    public void SetPlayer1Object(GameObject target)
+    public void SetPlayerObject(GameObject target)
     {
         //Pawn tempPawn = target.GetComponent<Pawn>();    
 
-        player1Object = target;
+        playerObject = target;
     }
 
     public GameObject SpawnCamera(GameObject prefab)
@@ -276,6 +327,72 @@ public class GameManager : MonoBehaviour
     }
 
 
+    //respawn without destroying
+    public void RespawnPlayer()
+    {
+        //player has died, move prefab and deincrement lives
+        currentPlayerLives -= 1;
+
+        PlayerHealthComponent tempHealthComp = playerObject.GetComponent<PlayerHealthComponent>();
+
+        tempHealthComp.Heal(tempHealthComp.maxHealth);
+
+        // move to checkpoint
+        playerObject.transform.position = currentPlayerCheckpoint.position;
+
+    }
+
+
+    /*
+    //respawn player 
+
+    public void RespawnPlayer()
+    {
+        //player has died, respawn tank prefab and deincrement lives
+        //currentPlayer1Lives -= 1;
+
+
+
+        //Spawn tank pawn (and store it in tanks)
+        Pawn tempPlayerPawn = SpawnPawn(playerPawnPrefab);
+
+        //Have player possess pawn
+        playerController.Possess(tempPlayerPawn);
+
+        playerController.SetInputActions(playerInputActionsPrefab);
+
+        //set controller for healthcomp
+        PlayerHealthComponent tempHealthComp = tempPlayerPawn.GetComponent<PlayerHealthComponent>();
+        tempHealthComp.AssignController(playerController);
+
+        //add Audio Listener to pawn
+        tempPlayerPawn.AddComponent<AudioListener>();
+
+        // move to checkpoint
+        tempPlayerPawn.transform.position = currentPlayerCheckpoint.position;
+
+
+        SetPlayerObject(tempPlayerPawn.gameObject);
+
+        if (playerObject != null)
+        {
+            playerObject.GetComponent<Rigidbody>().angularVelocity = Vector2.zero;
+        }
+
+        //get player object
+        CameraFollow tempCamera = playerCamera.GetComponent<CameraFollow>();
+        tempCamera.SetTarget(playerObject);
+
+        //set the camera of the pawn mover
+        PawnMover tempPawnMover = tempPlayerPawn.GetComponent<PawnMover>();
+
+        tempPawnMover.camera = playerCamera.GetComponent<Camera>();
+
+    }
+    */
+
+
+
 
     //Enemy Spawning//
 
@@ -288,7 +405,7 @@ public class GameManager : MonoBehaviour
 
         Vector3 enemySpawnPosition;
 
-        /*
+
         //choose a spawnpoint from the list
         if (enemySpawnPoints.Count > 0)
         {
@@ -298,12 +415,12 @@ public class GameManager : MonoBehaviour
             EnemySpawn spawnPoint;
 
             //check if this enemySpawnPoint has already spawned an object
-            do
-            {
-                //set randomly selected spawn point to this enemyspawn variable
-                spawnPoint = enemySpawnPoints[Random.Range(0, enemySpawnPoints.Count)];
 
-            } while (spawnPoint.IsSpawnedEnemy() == true);
+
+            //set randomly selected spawn point to this enemyspawn variable
+            spawnPoint = enemySpawnPoints[Random.Range(0, enemySpawnPoints.Count)];
+
+
 
             //set this spanw points transform to a transform variable
             Transform spawnPointTransform = spawnPoint.transform;
@@ -311,10 +428,10 @@ public class GameManager : MonoBehaviour
             enemySpawnPosition = spawnPointTransform.position;
 
             //keep track of the index of the enemy 
-            int enemyIndex = Random.Range(0, enemies.Count);
+            int enemyIndex = Random.Range(0, enemyPrefabs.Count);
 
             //get a random enemy prefab from list using enemyIndex.
-            GameObject tempEnemyObject = enemies[enemyIndex];
+            GameObject tempEnemyObject = enemyPrefabs[enemyIndex];
 
             //Spawn tank pawn (and store it in tanks)
             Pawn tempEnemyPawn = SpawnEnemyPawn(tempEnemyObject);
@@ -322,8 +439,13 @@ public class GameManager : MonoBehaviour
             //set the pawn tank as the object to be traceked whne spawned.
             spawnPoint.SetSpawnedEnemy(tempEnemyObject);
 
+            // move to spawnpoint
+            tempEnemyPawn.transform.position = enemySpawnPosition;
+
+            initalSpawnedEnemies++;
+
             //create temp enemy controller
-            Controller_AI tempEnemyController;
+            //Controller_AI tempEnemyController;
 
 
             /*
@@ -405,6 +527,9 @@ public class GameManager : MonoBehaviour
         //tempEnemyTankPawn.transform.position = enemySpawnPosition;
 
         */
+
+        }
+
     }
 
    

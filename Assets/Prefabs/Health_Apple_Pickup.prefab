@@ -22,11 +22,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
       propertyPath: m_LocalPosition.z
@@ -77,6 +77,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 614016064025208652}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5002506731215646577}
   m_SourcePrefab: {fileID: 100100000, guid: 532eb22f487537641bc89d1425bedad1, type: 3}
 --- !u!1 &461314450069831040 stripped
 GameObject:
@@ -119,6 +122,8 @@ MonoBehaviour:
   powerup:
     lifeSpan: 0
     amountToHeal: 1
+  eatClip: {fileID: 8300000, guid: 3e9e6db6dfbe4db44b64a79c1054ea64, type: 3}
+  spawnedAudioPlayer: {fileID: 1882355770868290318, guid: bb57bc0e6bd9529479639a80dc764eda, type: 3}
 --- !u!114 &614016064025208652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,3 +138,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::FloatingEffect
   speed: 1
   height: 0.1
+--- !u!114 &-5002506731215646577
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 461314450069831040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 436c7330e0d379e45b83dfa3ccfe2d77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Rotator
+  objectRotation: {x: 0, y: 5, z: 0}
+  speed: 30

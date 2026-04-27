@@ -172,3 +172,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DamageOnOverlapProjectile
   owner: {fileID: 0}
   damageDone: 1
+  damageRate: 0

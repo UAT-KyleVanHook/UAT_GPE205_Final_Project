@@ -11,7 +11,7 @@ public class CameraFollow : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //target = GameManager.instance.playerObject;
+        target = GameManager.instance.playerObject;
 
 
     }

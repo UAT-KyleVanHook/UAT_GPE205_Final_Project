@@ -36,7 +36,7 @@ public class Controller_AI : Controller
         Possess(pawn);
 
         //set enemy targets
-        //target = GameManager.instance.player1Object;
+        //target = GameManager.instance.playerObject;
 
     }
 
@@ -51,7 +51,10 @@ public class Controller_AI : Controller
     public void DoChase()
     {
         //start calculations to find position to move towards
-        Seek(target);
+   
+            Seek(target);
+        
+        
 
     }
 
@@ -209,12 +212,16 @@ public class Controller_AI : Controller
         agentToTargetVector = agentToTargetVector.normalized;
 
         // Find the angle between the direction our agent is facing (forward in local space) and the vector to the target.
-        float angleToTarget = Vector3.Angle(agentToTargetVector, pawn.transform.forward);
+        //float angleToTarget = Vector3.Angle(agentToTargetVector, transform.forward);
 
+        //raise the position just a bit so it doesn't hit the ground plane
+        Vector3 startingPosition = new Vector3(transform.position.x, transform.position.y + .1f, transform.position.z);
 
         // If our ray hit something 
-        if (Physics.Raycast(pawn.transform.position, agentToTargetVector, out hit, visionDistance))
+        if (Physics.Raycast(startingPosition, agentToTargetVector, out hit, distance))
         {
+            //Debug.Log("Hit: " + hit.collider.gameObject);
+
             // if the hit is the target object, return true
             if (hit.collider.gameObject == target)
             {
@@ -273,26 +280,20 @@ public class Controller_AI : Controller
 
     }
 
-    /*
+    
     //get the player as the target
     public void TargetPlayerOne()
     {
         // If the GameManager exists
         if (GameManager.instance != null)
         {
-            // And the array of players exists
-            if (GameManager.instance.players != null)
+            if (GameManager.instance.playerObject != null)
             {
-                // And there are players in it
-                if (GameManager.instance.players.Count > 0)
-                {
-                    //Then target the gameObject of the pawn of the first player controller in the list
-                    target = GameManager.instance.player1Object;
-                }
+                target = GameManager.instance.playerObject;
             }
         }
     }
-    */
+    
 
     //check the we have a target
     protected bool IsHasTarget()
@@ -305,6 +306,9 @@ public class Controller_AI : Controller
     //vision
     public bool CanSee(GameObject target)
     {
+
+       
+
         RaycastHit hit;
 
         //field of view check
@@ -312,30 +316,49 @@ public class Controller_AI : Controller
         // Find the vector from the agent to the target
         Vector3 agentToTargetVector = target.transform.position - transform.position;
 
+        //normalize
+        agentToTargetVector = agentToTargetVector.normalized;
+
         // Find the angle between the direction our agent is facing (forward in local space) and the vector to the target.
-        float angleToTarget = Vector3.Angle(agentToTargetVector, pawn.transform.forward);
+        float angleToTarget = Vector3.Angle(agentToTargetVector, transform.forward);
 
         // if that angle is less than our field of view
         if (angleToTarget < FOVAngle)
         {
+            //return true;
 
-            //line of sight check
-            Vector3 vectorToTarget = target.transform.position - pawn.transform.position;
+            
+            Vector3 startingPosition = new Vector3(transform.position.x, transform.position.y + .1f, transform.position.z);
 
-            if (Physics.Raycast(pawn.transform.position, vectorToTarget, out hit, visionDistance))
+
+            if (Physics.Raycast(startingPosition, agentToTargetVector, out hit, visionDistance))
             {
+
+               
+
                 if (hit.collider.gameObject == target)
                 {
 
                     return true;
 
                 }
+                else
+                {
+                    //nothing was hit
+                    return false;
+                }
 
-                return false;
 
             }
+            
 
         }
+        else
+        {
+            //nothing was hit
+            return false;
+        }
+
 
         //nothing was hit
         return false;

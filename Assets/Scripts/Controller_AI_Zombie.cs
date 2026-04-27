@@ -7,12 +7,29 @@ public class Controller_AI_Zombie : Controller_AI
 
         GameManager.instance.ai.Add(this);
 
+        //get damage on overlap
+
+        DamageOnOverlap tempdamOnOverlap = pawn.GetComponentInChildren<DamageOnOverlap>();
+
+        if (tempdamOnOverlap != null)
+        {
+            tempdamOnOverlap.owner = pawn;
+        }
+
         //do the base of start
         base.Start();
 
+        if (!IsHasTarget())
+        {
+            ChangeState(AIState.ChooseTarget);
+           
+        }
+        else
+        {
+            ChangeState(AIState.Idle);
+        }
 
-
-        ChangeState(AIState.Idle);
+        
 
 
     }
@@ -20,28 +37,35 @@ public class Controller_AI_Zombie : Controller_AI
     public override void Update()
     {
 
-       // if (target == null)
-        //{
-            //set enemy targets
-            //target = GameManager.instance.player1Object;
-        //}
-
         base.Update();
 
+        Debug.Log("Is Target Not Blocked: " + IsTargetNotBlocked(target, visionDistance));
+        //Debug.Log("Zombie can see target: " + CanSee(target));
+        Debug.Log("Zombie can hear target: " + CanHear(target));
 
+        /*
+        Debug.Log("Current State: " + currentState);
+        Debug.Log("Is Target Not Blocked: " + IsTargetNotBlocked(target, 100));
+
+        Debug.Log("Zombie has target: " + IsHasTarget());
+        Debug.Log("Zombie can see target: " + CanSee(target));
+        Debug.Log("Zombie can hear target: " + CanHear(target));
+        */
     }
 
     public override void MakeDecisions()
     {
-        Debug.Log("Can Hear: " + CanHear(target));
 
-       
+
+
 
         //if the pawn we are attached to is null, destroy this controller
         if (pawn == null)
         {
             Destroy(gameObject);
         }
+
+
 
         switch (currentState)
         {
@@ -51,9 +75,13 @@ public class Controller_AI_Zombie : Controller_AI
                 //do nothing
                 DoIdle();
 
+                if (!IsHasTarget())
+                {
+                    ChangeState(AIState.ChooseTarget);
+                }
 
                 //if can hear target, and target is not blocked, turn towards noise
-                if (CanHear(target) && IsTargetNotBlocked(target, 100))
+                if (CanHear(target) && IsTargetNotBlocked(target, visionDistance))
                 {
 
                     ChangeState(AIState.Turn);
@@ -62,26 +90,30 @@ public class Controller_AI_Zombie : Controller_AI
 
                 
                 //if can see target, then start chase AI State
-                if (CanSee(target))
+                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
                 {
 
                     ChangeState(AIState.Chase);
 
                 }
-                
 
-            break;
+
+                break;
 
 
 
             //turn state
             case AIState.Turn:
 
+                if(CanHear(target) && IsTargetNotBlocked(target, visionDistance))
+                {
+                    TurnTowardsPoint(target);
+                }
+
                 
-                TurnTowardsPoint(target);
 
                 //if can see target, chase
-                if (CanSee(target))
+                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
                 {
 
                     ChangeState(AIState.Chase);
@@ -98,6 +130,7 @@ public class Controller_AI_Zombie : Controller_AI
                 }
 
 
+
             break;
 
 
@@ -105,7 +138,13 @@ public class Controller_AI_Zombie : Controller_AI
             case AIState.Chase:
 
                 //Chase target
-                DoChase();//if can't see target, go to idle
+                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+                {
+                    DoChase();//if can't see target, go to idle
+                }
+                    
+                
+                
 
 
                 //if can't see target, go to idle
@@ -116,7 +155,6 @@ public class Controller_AI_Zombie : Controller_AI
 
                 }
 
-
                 break;
 
 
@@ -125,7 +163,7 @@ public class Controller_AI_Zombie : Controller_AI
             //get the player as a target
             case AIState.ChooseTarget:
 
-                //TargetPlayerOne();
+                TargetPlayerOne();
 
                 ChangeState(AIState.Idle);
 

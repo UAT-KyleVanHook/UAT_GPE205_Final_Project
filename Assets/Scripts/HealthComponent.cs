@@ -7,14 +7,13 @@ public class HealthComponent : MonoBehaviour
     public float maxHealth;
 
     public AudioClip destructionClip;
-    private AudioSource audioSource;
+  
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
 
-        //currentHealth = maxHealth;
-        audioSource = GetComponent<AudioSource>();
+
 
     }
 
@@ -68,12 +67,6 @@ public class HealthComponent : MonoBehaviour
 
     public virtual void Die(Pawn source)
     {
-        //check that the sound clip isn't null
-        if (destructionClip != null)
-        {
-            //play sound clip at point
-            AudioSource.PlayClipAtPoint(destructionClip, transform.position);
-        }
 
         Controller sourceController = source.GetController();
 
