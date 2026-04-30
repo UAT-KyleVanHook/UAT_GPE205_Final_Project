@@ -68,10 +68,14 @@ public class MapGenerator : MonoBehaviour
                 selectedMapType = maps[1];
             }
         }
+        else
+        {
+            selectedMapType = maps[0];
+        }
 
 
-        //Instatnitate the map
-        currentMap = Instantiate<GameObject>(selectedMapType);
+            //Instatnitate the map
+            currentMap = Instantiate<GameObject>(selectedMapType);
 
         //set position at zero
         currentMap.transform.position = Vector3.zero;
