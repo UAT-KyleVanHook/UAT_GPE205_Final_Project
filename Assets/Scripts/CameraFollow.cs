@@ -29,8 +29,8 @@ public class CameraFollow : MonoBehaviour
 
 
         //check if the GameplayScreenObject is set as active
-        //if (GameManager.instance.GameplayScreenObject.activeSelf && target != null)
-        //{
+        if (/*GameManager.instance.GameplayScreenObject.activeSelf && */target != null)
+        {
 
             // returns the camera offset from local space to world space and sets the cameras transfrom position.
             transform.position = target.transform.TransformPoint(CameraOffset);
@@ -39,7 +39,7 @@ public class CameraFollow : MonoBehaviour
             //could set this at a point in front of the tank pawn later.
             transform.LookAt(target.transform.position);
 
-        //}
+        }
 
 
     }

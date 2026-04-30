@@ -64,7 +64,8 @@ MonoBehaviour:
   playerControllers: []
   enemySpawnPoints: []
   pickUps: []
-  enemyInitialSpawnAmount: 1
+  playerStartingSpawnPoint: {fileID: 0}
+  enemyInitialSpawnAmount: 3
   enemyPawns: []
   enemyPrefabs:
   - {fileID: 3505478735574491736, guid: 222b0930a92d10045a06376d33645d65, type: 3}
@@ -74,3 +75,4 @@ MonoBehaviour:
   CreditsScreenObject: {fileID: 0}
   GameplayScreenObject: {fileID: 0}
   GameOverScreenObject: {fileID: 0}
+  WinScreenObject: {fileID: 0}

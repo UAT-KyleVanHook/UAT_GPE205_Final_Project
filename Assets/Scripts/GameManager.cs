@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 
     public Level level;
 
-    //bool bGameOver = false;
+    bool bGameOver = false;
 
    
 
@@ -45,12 +45,15 @@ public class GameManager : MonoBehaviour
     public List<PlayerController> playerControllers;
     public List<EnemySpawn> enemySpawnPoints;
     public List<Pickup> pickUps;
+    public List<GameWin> endGoals;
+    public List<Checkpoint> checkpoints;
+    public List<Key> keys;
 
-    public GameObject playerStartingSpawnPoint;
+    // public GameObject playerStartingSpawnPoint;
 
     [Header("AI Enemies")]
     public int enemyInitialSpawnAmount;
-    public int SpawnedEnemies;
+    //public int SpawnedEnemies;
     public List<Pawn> enemyPawns;
 
     [Header("Spawnable Enemies")]
@@ -63,6 +66,7 @@ public class GameManager : MonoBehaviour
     public GameObject CreditsScreenObject;
     public GameObject GameplayScreenObject;
     public GameObject GameOverScreenObject;
+    public GameObject WinScreenObject;
 
     public void Awake()
     {
@@ -88,8 +92,10 @@ public class GameManager : MonoBehaviour
         playerSpawnPoints = new List<PlayerSpawn>();
         playerPawn = new List<PlayerPawn>();
         enemySpawnPoints = new List<EnemySpawn>();
-        //powerUpSpawners = new List<SpawnerTimed>();
+        endGoals = new List<GameWin>();
         pickUps = new List<Pickup>();
+        checkpoints = new List<Checkpoint>();
+        keys = new List<Key>();
 
 
         //check that playerprefs has a highscore to track. If it doesn't make one.
@@ -104,7 +110,7 @@ public class GameManager : MonoBehaviour
         highScore = PlayerPrefs.GetInt("HighScore");
 
 
-        //StartGame();
+        ActivateTitleScreen();
     }
 
     public void ActivateTitleScreen()
@@ -141,7 +147,6 @@ public class GameManager : MonoBehaviour
         GameplayScreenObject.SetActive(true);
 
         //clear previous level
-
         //start game
         StartGame();
 
@@ -153,11 +158,43 @@ public class GameManager : MonoBehaviour
         GameOverScreenObject.SetActive(true);
     }
 
+    public void ActivateWinScreen()
+    {
+        DeactivateAllStates();
+        WinScreenObject.SetActive(true);
+    }
+
     public void GameQuit()
     {
         Debug.Log("Game Quit! Bye!");
         Application.Quit();
 
+    }
+
+    //game was won
+    public void GameWin()
+    {
+
+
+        if (currentPlayerScore > highScore)
+        {
+
+            bGameOver = true;
+
+            Debug.Log("Game Won!!!");
+
+            Debug.Log("Setting Hi-Score!");
+
+            PlayerPrefs.SetInt("HighScore", currentPlayerScore);
+            PlayerPrefs.Save();
+
+        }
+
+        //DeactivateAllStates();
+
+        ResetMap();
+
+        ActivateWinScreen();
     }
 
     public void DeactivateAllStates()
@@ -169,18 +206,18 @@ public class GameManager : MonoBehaviour
         CreditsScreenObject.SetActive(false);
         GameplayScreenObject.SetActive(false);
         GameOverScreenObject.SetActive(false);
-
+        WinScreenObject.SetActive(false);
 
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
             
         currentPlayerLives = startingPlayerLives;
 
-        StartGame();
+        //StartGame();
+
     }
 
     // Update is called once per frame
@@ -188,13 +225,13 @@ public class GameManager : MonoBehaviour
     {
 
 
-        //set score  if gameplay screen is active
-        //if (GameplayScreenObject.activeSelf)
-        //{
-
+        //set score and lives, if gameplay screen is active
+        if (GameplayScreenObject.activeSelf)
+        {
             if (playerController != null)
             {
 
+                currentPlayerLives = playerController.lives;
                 currentPlayerScore = playerController.currentScore;
 
                 Canvas canvas1 = playerCamera.GetComponentInChildren<Canvas>();
@@ -203,13 +240,44 @@ public class GameManager : MonoBehaviour
                 player1ScoreManger.SetScoreValue(currentPlayerScore);
 
             }
+        }
 
 
 
 
+        //if the playerLives if less than or equal to zero, and the game over bool is false, then display "Game OVer!" and flip bool to true.
+        if (bGameOver == false && currentPlayerLives <= 0 && GameplayScreenObject.activeSelf)
+        {
+            // game over bool is true
+            bGameOver = true;
+
+                Debug.Log("Game Over!!!");
 
 
-        //}
+                if (currentPlayerScore > highScore)
+                {
+
+                    Debug.Log("Setting Hi-Score!");
+
+                    PlayerPrefs.SetInt("HighScore", currentPlayerScore);
+                    PlayerPrefs.Save();
+
+                }
+
+
+                //reset all varaibles for the game
+                ResetMap();
+
+                //set gameover screen
+                ActivateGameOverScreen();
+
+            
+
+
+        }
+
+
+
     }
 
     public void StartGame()
@@ -225,14 +293,17 @@ public class GameManager : MonoBehaviour
         //Spawn player
         SpawnPlayer();
 
-
-        while (SpawnedEnemies < enemyInitialSpawnAmount)
+        if(enemyInitialSpawnAmount > 0)
         {
-            SpawnEnemy();
-        } 
+            for (int i = 0; i < enemyInitialSpawnAmount; i++)
+            {
+                SpawnEnemy();
+            }
+        }
 
 
-}
+
+    }
 
 
 
@@ -241,26 +312,8 @@ public class GameManager : MonoBehaviour
     {
         Vector3 playerSpawnPosition;
 
-        /*
-        //choose a spawnpoint from the list
-        if (playerSpawnPoints.Count > 0)
-        {
-            Debug.Log("Spawn point was chosen!");
-
-            Transform spawnPoint = playerSpawnPoints[Random.Range(0, playerSpawnPoints.Count)].transform;
-
-            playerSpawnPosition = spawnPoint.position;
-        }
-        else
-        {
-            Debug.Log("Spawm point was not chosen!");
-            playerSpawnPosition = Vector3.zero;
-        }
-        */
-
-
-
         Debug.Log(playerStartingSpawnPoints[0]);
+
         /*
         if (playerStartingSpawnPoint != null)
         {
@@ -296,7 +349,7 @@ public class GameManager : MonoBehaviour
             
 
 
-        //Spawn tank pawn (and store it in tanks)
+        //Spawn  pawn (and store it in tanks)
         Pawn tempPlayerPawn = SpawnPawn(playerPawnPrefab);
 
         //Spawn a player controller (and store it in players)
@@ -353,6 +406,7 @@ public class GameManager : MonoBehaviour
         //Pawn tempPawn = target.GetComponent<Pawn>();    
 
         playerObject = target;
+
     }
 
     public GameObject SpawnCamera(GameObject prefab)
@@ -390,7 +444,7 @@ public class GameManager : MonoBehaviour
     public void RespawnPlayer()
     {
         //player has died, move prefab and deincrement lives
-        currentPlayerLives -= 1;
+        currentPlayerLives = playerController.lives;
 
         PlayerHealthComponent tempHealthComp = playerObject.GetComponent<PlayerHealthComponent>();
 
@@ -401,54 +455,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-
-    /*
-    //respawn player 
-
-    public void RespawnPlayer()
-    {
-        //player has died, respawn tank prefab and deincrement lives
-        //currentPlayer1Lives -= 1;
-
-
-
-        //Spawn tank pawn (and store it in tanks)
-        Pawn tempPlayerPawn = SpawnPawn(playerPawnPrefab);
-
-        //Have player possess pawn
-        playerController.Possess(tempPlayerPawn);
-
-        playerController.SetInputActions(playerInputActionsPrefab);
-
-        //set controller for healthcomp
-        PlayerHealthComponent tempHealthComp = tempPlayerPawn.GetComponent<PlayerHealthComponent>();
-        tempHealthComp.AssignController(playerController);
-
-        //add Audio Listener to pawn
-        tempPlayerPawn.AddComponent<AudioListener>();
-
-        // move to checkpoint
-        tempPlayerPawn.transform.position = currentPlayerCheckpoint.position;
-
-
-        SetPlayerObject(tempPlayerPawn.gameObject);
-
-        if (playerObject != null)
-        {
-            playerObject.GetComponent<Rigidbody>().angularVelocity = Vector2.zero;
-        }
-
-        //get player object
-        CameraFollow tempCamera = playerCamera.GetComponent<CameraFollow>();
-        tempCamera.SetTarget(playerObject);
-
-        //set the camera of the pawn mover
-        PawnMover tempPawnMover = tempPlayerPawn.GetComponent<PawnMover>();
-
-        tempPawnMover.camera = playerCamera.GetComponent<Camera>();
-
-    }
-    */
 
 
 
@@ -502,7 +508,7 @@ public class GameManager : MonoBehaviour
             // move to spawnpoint
             tempEnemyPawn.transform.position = enemySpawnPosition;
 
-            SpawnedEnemies++;
+           // SpawnedEnemies++;
 
             //create temp enemy controller
             //Controller_AI tempEnemyController;
@@ -603,16 +609,115 @@ public class GameManager : MonoBehaviour
 
     }
 
-    /*
-    public Controller_AI SpawnEnemyController(GameObject prefab)
+
+    //Reset the map
+    public void ResetMap()
     {
 
-        GameObject tempEnemy = Instantiate<GameObject>(prefab, Vector3.zero, Quaternion.identity);
-        return tempEnemy.GetComponent<Controller_AI>();
+        Debug.Log("Reset Game.");
+
+        bGameOver = false;
+
+        //reset player trackers
+        if (GameplayScreenObject.activeSelf)
+        {
+            Destroy(playerObject.gameObject);
+            Destroy(playerController.gameObject);
+            Destroy(playerCamera.gameObject);
+
+            playerObject = null;
+            playerController = null;
+            playerCamera = null;
+            currentPlayerCheckpoint = null;
+        }
+
+
+        //reset lives and score
+        currentPlayerScore = 0;
+        currentPlayerLives = 1;
+
+
+
+        //go through each list and destroy the object
+        foreach (PlayerPawn tempPawn in playerPawn)
+        {
+            Destroy(tempPawn);
+
+        }
+
+        foreach (Pawn tempPawn in enemyPawns)
+        {
+            Destroy(tempPawn);
+            
+        }
+
+        foreach (Controller_AI tempAI in ai)
+        {
+            Destroy(tempAI);
+
+        }
+
+        foreach (PlayerController tempController in playerControllers)
+        {
+            Destroy(tempController);
+
+        }
+
+        foreach (PlayerSpawn tempSpawnPoint in playerSpawnPoints)
+        {
+            Destroy(tempSpawnPoint);
+
+        }
+
+        foreach (PlayerStartingSpawn tempSpawnPoint in playerStartingSpawnPoints)
+        {
+            Destroy(tempSpawnPoint);
+
+        }
+
+        foreach (EnemySpawn tempSpawnPoint in enemySpawnPoints)
+        {
+            Destroy(tempSpawnPoint);
+
+        }
+
+        foreach (Pickup tempPickup in pickUps)
+        {
+            Destroy(tempPickup);
+
+        }
+
+        foreach (GameWin tempGoal in endGoals)
+        {
+            Destroy(tempGoal);
+        }
+
+        foreach (Checkpoint tempCP in checkpoints)
+        {
+            Destroy(tempCP);
+        }
+
+        foreach (Key tempKey in keys)
+        {
+            Destroy(tempKey);
+        }
+
+
+
+        //remove currnetly spawned map
+        if (GameplayScreenObject.activeSelf)
+        {
+            level.mapGenerator.RemoveMap();
+        }
+
+
+
+
+        PickUpHealth.count = 0;
+        PickUpScore.count = 0;
+
 
     }
-
-    */
 
 }
 

@@ -101,27 +101,31 @@ public class PlayerHealthComponent : HealthComponent
 
         }
         
-        Controller sourceController = source.GetController();
-
-        //check that the source that desrtoyed this object has a controller
-        if (sourceController != null)
+        //check that the source isn't null
+        if(source != null)
         {
-            Pawn tempPawn = sourceController.GetComponent<Pawn>();
+            Controller sourceController = source.GetController();
 
-            //check that the destroyed object has a pawn.
-            if (tempPawn != null)
+            //check that the source that desrtoyed this object has a controller
+            if (sourceController != null)
             {
-                Controller tempController = tempPawn.GetController();
+                Pawn tempPawn = sourceController.GetComponent<Pawn>();
 
-                //check that destroyed object has a controller. Then get the scoreAmount form the controller
-                if (tempController != null)
+                //check that the destroyed object has a pawn.
+                if (tempPawn != null)
                 {
-                    sourceController.AddToScore(tempController.scoreAmount);
+                    Controller tempController = tempPawn.GetController();
+
+                    //check that destroyed object has a controller. Then get the scoreAmount form the controller
+                    if (tempController != null)
+                    {
+                        sourceController.AddToScore(tempController.scoreAmount);
+                    }
+
                 }
 
+
             }
-
-
         }
         
         //deincremnt player lives in controller
@@ -130,7 +134,15 @@ public class PlayerHealthComponent : HealthComponent
         Debug.Log(gameObject.name + " has respawned.");
 
         //respawn the player
-        GameManager.instance.RespawnPlayer();
+        if (controller.lives > 0)
+        {
+            GameManager.instance.RespawnPlayer();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        
 
     }
 

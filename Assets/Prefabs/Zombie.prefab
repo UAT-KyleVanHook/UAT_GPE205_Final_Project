@@ -474,7 +474,7 @@ MonoBehaviour:
   target: {fileID: 0}
   fleeDistance: 10
   hearingDistance: 10
-  visionDistance: 20
+  visionDistance: 25
   FOVAngle: 80
 --- !u!114 &7841572030369446734
 MonoBehaviour:
@@ -489,7 +489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthComponent
   currentHealth: 0
-  maxHealth: 2
+  maxHealth: 3
   destructionClip: {fileID: 8300000, guid: 77dca798be7f28d419fe9c5bea0f6c29, type: 3}
   healthImage: {fileID: 5713389465477098748}
   hurtClip: {fileID: 8300000, guid: ef460c55b6681f241bdd186ea5f6c72b, type: 3}
@@ -506,7 +506,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: -7266344292332840420, guid: 6e1fad6f97d71764499058ffb72e23a0, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

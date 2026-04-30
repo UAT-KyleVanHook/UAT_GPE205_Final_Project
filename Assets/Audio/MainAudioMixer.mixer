@@ -68,6 +68,8 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters:
+  - guid: 9d3daf5182b430e4e9c52b76c9c40ec7
+    name: AmbientVolume
   - guid: 3f9faa980bfe07643b7eaea8192a83cf
     name: MainVolume
   - guid: 5d105d6dbac58c14ab73befd772fe76b
@@ -79,6 +81,7 @@ AudioMixerController:
     - 4f50c7ef895af4345a542d4ec8818f3d
     - 6b0d498a4d19c4249b831b62462426cc
     - 5c6374c7ddfebf1428314924922c2da3
+    - 762eb2c1971566f4faaa3052b1c03b2c
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -94,6 +97,7 @@ AudioMixerGroupController:
   m_Children:
   - {fileID: -7266344292332840420}
   - {fileID: -5855396855593346460}
+  - {fileID: 4214499344162130607}
   m_Volume: 3f9faa980bfe07643b7eaea8192a83cf
   m_Pitch: 9e9c410b5da0b3545b8a01be2fc49337
   m_Send: 00000000000000000000000000000000
@@ -130,6 +134,39 @@ AudioMixerSnapshotController:
     3f9faa980bfe07643b7eaea8192a83cf: -0.042035673
     8f0b732f278455845884cf5796e2420e: -0.042035673
   m_TransitionOverrides: {}
+--- !u!243 &4214499344162130607
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Ambient
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 762eb2c1971566f4faaa3052b1c03b2c
+  m_Children: []
+  m_Volume: 9d3daf5182b430e4e9c52b76c9c40ec7
+  m_Pitch: 16f18781037d74b4088795eb10118009
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 4878219034569836625}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &4878219034569836625
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 54bd5dfbd9d91174b90f2a2f90a4c37d
+  m_EffectName: Attenuation
+  m_MixLevel: b330410269f4a1546af529afee924677
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &8269917496954951641
 AudioMixerEffectController:
   m_ObjectHideFlags: 3

@@ -642,7 +642,7 @@ MonoBehaviour:
   controller: {fileID: 0}
   health: {fileID: 0}
   moveSpeed: 5
-  turnSpeed: 1
+  turnSpeed: 5
   shootForce: 500
 --- !u!114 &2228317520096568506
 MonoBehaviour:

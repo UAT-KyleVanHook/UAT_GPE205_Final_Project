@@ -39,7 +39,7 @@ public class PlayerPawn : Pawn
     public override void Rotate(Vector3 directionToRotate)
     {
         //might not need this
-        mover.Rotate(directionToRotate, moveSpeed);
+        mover.Rotate(directionToRotate, turnSpeed);
     }
 
     public override void RotateTowards(Vector3 position)

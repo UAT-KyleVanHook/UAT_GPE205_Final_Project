@@ -89,7 +89,7 @@ public class PlayerController : Controller
         {
             if(pawn != null && inputActions["Look"].triggered)
             {
-
+                //input the position of the mouse
                 //Debug.Log(mousePosition);
                 pawn.Rotate(new Vector2(mousePosition.x, mousePosition.y));
 
@@ -106,8 +106,6 @@ public class PlayerController : Controller
             {
                 //TankShooter shooter = pawn.GetComponent<TankShooter>();
 
-                //was "pawn.Shoot()", but had to change to to issue with AI enemies also firing.
-                //shooter.Shoot();
                 if (pawn != null && moveNoiseMaker != null)
                 {
                     Debug.Log("Shooting!");

@@ -39,9 +39,9 @@ public class Controller_AI_Zombie : Controller_AI
 
         base.Update();
 
-        Debug.Log("Is Target Not Blocked: " + IsTargetNotBlocked(target, visionDistance));
+        //Debug.Log("Is Target Not Blocked: " + IsTargetNotBlocked(target, visionDistance));
         //Debug.Log("Zombie can see target: " + CanSee(target));
-        Debug.Log("Zombie can hear target: " + CanHear(target));
+        //Debug.Log("Zombie can hear target: " + CanHear(target));
 
         /*
         Debug.Log("Current State: " + currentState);
@@ -80,21 +80,28 @@ public class Controller_AI_Zombie : Controller_AI
                     ChangeState(AIState.ChooseTarget);
                 }
 
-                //if can hear target, and target is not blocked, turn towards noise
-                if (CanHear(target) && IsTargetNotBlocked(target, visionDistance))
+                if (target != null)
                 {
+                    //if can hear target, and target is not blocked, turn towards noise
+                    if (CanHear(target) && IsTargetNotBlocked(target, visionDistance))
+                    {
 
-                    ChangeState(AIState.Turn);
+                        ChangeState(AIState.Turn);
 
+                    }
                 }
 
-                
-                //if can see target, then start chase AI State
-                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+
+
+                if (target != null)
                 {
+                    //if can see target, then start chase AI State
+                    if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+                    {
 
-                    ChangeState(AIState.Chase);
+                        ChangeState(AIState.Chase);
 
+                    }
                 }
 
 
@@ -105,28 +112,37 @@ public class Controller_AI_Zombie : Controller_AI
             //turn state
             case AIState.Turn:
 
-                if(CanHear(target) && IsTargetNotBlocked(target, visionDistance))
+                if (target != null)
                 {
-                    TurnTowardsPoint(target);
-                }
-
-                
-
-                //if can see target, chase
-                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
-                {
-
-                    ChangeState(AIState.Chase);
-
+                    if (CanHear(target) && IsTargetNotBlocked(target, visionDistance))
+                    {
+                        TurnTowardsPoint(target);
+                    }
                 }
 
 
-                //if can't hear target, and can't see target, go to idle
-                if (!CanHear(target) && !CanSee(target))
+                if (target != null)
                 {
+                    //if can see target, chase
+                    if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+                    {
 
-                    ChangeState(AIState.Idle);
+                        ChangeState(AIState.Chase);
 
+                    }
+                }
+
+
+
+                if (target != null)
+                {
+                    //if can't hear target, and can't see target, go to idle
+                    if (!CanHear(target) && !CanSee(target))
+                    {
+
+                        ChangeState(AIState.Idle);
+
+                    }
                 }
 
 
@@ -137,22 +153,28 @@ public class Controller_AI_Zombie : Controller_AI
             //chase state
             case AIState.Chase:
 
-                //Chase target
-                if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+                if (target != null)
                 {
-                    DoChase();//if can't see target, go to idle
+                    //Chase target
+                    if (CanSee(target) && IsTargetNotBlocked(target, visionDistance))
+                    {
+                        DoChase();//if can't see target, go to idle
+                    }
                 }
-                    
-                
-                
 
 
-                //if can't see target, go to idle
-                if (!CanSee(target))
+
+
+
+                if (target != null)
                 {
+                    //if can't see target, go to idle
+                    if (!CanSee(target))
+                    {
 
-                    ChangeState(AIState.Idle);
+                        ChangeState(AIState.Idle);
 
+                    }
                 }
 
                 break;

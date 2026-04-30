@@ -1,11 +1,12 @@
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class PawnMover : Mover
 {
 
     private Rigidbody rb;
     
-    public Camera camera;
+    public new Camera camera;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -48,6 +49,9 @@ public class PawnMover : Mover
         //get raycast of the mouse
         Ray ray = camera.ScreenPointToRay(rotateDirection);
 
+        //this works
+
+        
         //check if raycast hits anything
         if(Physics.Raycast(ray, out RaycastHit hitInfo, maxDistance: 300f))
         {
@@ -57,10 +61,18 @@ public class PawnMover : Mover
             //make it so the y value is the current objects y value.This way the object doesn't freak out and rotate towards the Y-value.
             target.y = transform.position.y;
 
+
+            //Debug.Log(target);
+
             // look towards mouse direction
             transform.LookAt(target);
+            
 
         }
+        
+
+
+
 
         //var rotation = Quaternion.LookRotation(rotateDirection);
 
